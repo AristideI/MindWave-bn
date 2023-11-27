@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <header class="flex justify-between px-12 items-center bg-blue-100">
+      <a href="/" class="font-serif font-semibold text-xl">YelpCamp</a>
+      <section
+        class="flex justify-between items-center gap-6 text-lg font-semibold py-6"
+      >
+        <a href="/" class="hover:underline">Login</a>
+        <a href="/" class="hover:underline">Sign Up</a>
+        <a href="/" class="hover:underline">Logout</a>
+      </section>
+    </header>
+    <article class="px-[10%] mt-6">
+      <header class="bg-gray-200 rounded-sm p-12">
+        <h1 class="text-6xl font-bold">Welcome to YelpCamp!</h1>
+        <p class="text-xl my-4">
+          View our hand picked camps from all over the world
+        </p>
+        <a
+          class="px-8 py-2 bg-blue-500 rounded-md text-lg font-medium text-white"
+          href="/camps/new"
+          >Add a new camp</a
+        >
+      </header>
+
+      <section
+        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-8"
+      >
+        <% camps.forEach(elt=>{ %>
+
+        <div
+          class="w-full border p-2 flex flex-col justify-between items-center gap-4"
+        >
+          <img
+            class="w-full object-cover h-48"
+            src="<%= elt.image %>"
+            alt="camp"
+          />
+          <h2 class="text-xl font-medium text-center"><%= elt.name %></h2>
+          <a
+            href="/camps/<%= elt._id %>"
+            class="font-medium mx-auto border border-blue-600 bg-blue-500 px-4 py-1 rounded-xl text-white"
+            >View More</a
+          >
+        </div>
+
+        <% }) %>
+      </section>
+    </article>
+  </body>
+</html>

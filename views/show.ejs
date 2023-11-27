@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <header class="flex justify-between px-12 items-center bg-blue-100">
+      <a href="/" class="font-serif font-semibold text-xl">YelpCamp</a>
+      <section
+        class="flex justify-between items-center gap-6 text-lg font-semibold py-6"
+      >
+        <a href="/" class="hover:underline">Login</a>
+        <a href="/" class="hover:underline">Sign Up</a>
+        <a href="/" class="hover:underline">Logout</a>
+      </section>
+    </header>
+    <section class="flex flex-col justify-center items-center gap-6 py-20">
+      <h1 class="text-center font-semibold text-6xl"><%= camp.name %></h1>
+      <img
+        src="<%= camp.image %>"
+        alt="camp image"
+        class="w-1/3 object-cover"
+      />
+      <p><%= camp.description %></p>
+
+      <p class="font-bold text-xl">Comments</p>
+      <section class="flex flex-col gap-2">
+        <% camp.comments.forEach(comment => { %>
+        <div class="flex flex-col gap-2 border border-blue-300 p-4">
+          <p class="font-semibold"><%= comment.author %></p>
+          <p><%= comment.text %></p>
+        </div>
+        <% }) %>
+        <a
+          href="/camps/<%= camp._id %>/comments/new"
+          class="bg-blue-300 px-4 py-1 rounded-md w-fit self-end"
+          >Add a comment</a
+        >
+      </section>
+
+      <a href="/camps" class="hover:underline bg-blue-300 rounded-md px-4 py-1"
+        >Go Back</a
+      >
+    </section>
+  </body>
+</html>
