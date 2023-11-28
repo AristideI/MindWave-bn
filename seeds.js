@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Camp = require("./models/Camp");
+const Camp = require("./models/User");
 const Comment = require("./models/Comment");
 
 const data = [

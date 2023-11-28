@@ -1,97 +1,77 @@
+//==============================
+// REQUIRES
+//==============================
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const parser = require("body-parser");
-const Camp = require("./models/Camp");
+const passport = require("passport");
+const passportStrategy = require("passport-local");
+const passportLocalMongoose = require("passport-local-mongoose");
+const User = require("./models/User");
+const Post = require("./models/Post");
 const Comment = require("./models/Comment");
-// const User = require("./models/User");
-const seedDB = require("./seeds");
 
-seedDB();
-mongoose.connect("mongodb://127.0.0.1:27017/yelp_camp", {
+// CONNECT  DATABASE
+mongoose.connect("mongodb://127.0.0.1:27017/mindwave", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
 
+//==============================
+// SETUP DB
+//==============================
 const db = mongoose.connection;
-
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 db.once("open", () => {
   console.log("Connected to MongoDB!");
 });
 
+//==============================
+// SETING  WHAT APP WILL USE
+//==============================
 app.use(parser.urlencoded({ extended: true }));
-app.set("view engine", "ejs");
 
-// Schema setup
+//==============================
+// ROUTES
+//==============================
 
 app.get("/", function (req, res) {
-  res.render("landing");
+  const sample = {
+    name: "aristide",
+    exp: "this is my first return of json data",
+  };
+  res.json(sample);
 });
 
-app.get("/camps", (req, res) => {
-  const camps = Camp.find()
-    .then((camps) => {
-      res.render("camps", { camps });
-    })
-    .catch((err) => {
-      console.log("ERROR", err);
-    });
-});
-
-app.post("/camps", (req, res) => {
-  const name = req.body.name;
-  const image = req.body.image;
-  const description = req.body.description;
-  const newCamp = { name, image, description };
-  Camp.create(newCamp)
-    .then((camp) => {
-      res.redirect("/camps");
-    })
-    .catch((err) => {
-      console.log("ERROR", err);
-    });
-});
-
-app.get("/camps/new", (req, res) => {
-  res.render("new");
-});
-
-app.get("/camps/:id", (req, res) => {
-  const id = req.params.id;
-  Camp.findById(id)
-    .populate("comments")
+app.get("/post", (req, res) => {
+  Post.find()
+    .populate("Comment")
     .exec()
-    .then((camp) => {
-      res.render("show", { camp });
-    })
-    .catch((err) => console.log(err));
+    .then((data) => res.json(data))
+    .catch((err) => {
+      res.status(500).json({ error: "Internal Server Error" });
+    });
 });
 
-// ============================================================
-// Comments routes
-// ============================================================
-
-app.get("/camps/:id/comments/new", (req, res) => {
-  Camp.findById(req.params.id)
-    .then((camp) => {
-      res.render("newComment", { camp });
+app.post("/post", (req, res) => {
+  const newPost = req.body.post;
+  User.findById(req.body.id)
+    .then((user) => {
+      Post.create(newPost)
+        .then((post) => {
+          user.posts.push(post);
+        })
+        .then(() => {
+          res.status(200).json({ text: "new post was created" });
+        });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => res.status(500).json({ error: "Internal Server Error" }));
 });
 
-app.post("/camps/:id/comments", (req, res) => {
-  Camp.findById(req.params.id)
-    .then((camp) => {
-      Comment.create(req.body.comment).then((comment) => {
-        camp.comments.push(comment);
-        camp.save();
-        res.redirect(`/camps/${camp._id}`);
-      });
-    })
-    .catch((err) => console.log(err));
-});
-
+//==============================
+// SERVER LISTENS
+//==============================
 app.listen(3000, function () {
   console.log("yelp camp server has started");
 });
