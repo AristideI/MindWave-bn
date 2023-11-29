@@ -69,6 +69,18 @@ app.post("/post", (req, res) => {
     .catch((err) => res.status(500).json({ error: "Internal Server Error" }));
 });
 
+app.post("/comment", (req, res) => {
+  Post.findById(req.body.id)
+    .then((post) => {
+      Comment.create(req.body.comment).then((comment) => {
+        post.comments.push(comment);
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
 //==============================
 // SERVER LISTENS
 //==============================
