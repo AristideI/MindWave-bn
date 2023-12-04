@@ -151,6 +151,8 @@ app.post("/comment", (req, res) => {
 //==============================
 // SERVER LISTENS
 //==============================
-app.listen(3000, function () {
+
+const port = process.env.PORT;
+app.listen(port, function () {
   console.log("mind wave server has started");
 });
