@@ -1,23 +1,37 @@
 //==============================
 // REQUIRES
 //==============================
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const parser = require("body-parser");
 const passport = require("passport");
-const passportStrategy = require("passport-local");
+const LocalStrategy = require("passport-local");
 const passportLocalMongoose = require("passport-local-mongoose");
 const User = require("./models/User");
 const Post = require("./models/Post");
 const Comment = require("./models/Comment");
 
 // CONNECT  DATABASE
-mongoose.connect("mongodb://127.0.0.1:27017/mindwave", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+// mongoose.connect("mongodb://127.0.0.1:27017/mindwave", {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+// });
 
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGODB_CONNECT_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log("DB Connected successfully");
+  } catch (err) {
+    console.log("We had an error", err);
+  }
+};
+
+connectDB();
 //==============================
 // SETUP DB
 //==============================
@@ -31,6 +45,18 @@ db.once("open", () => {
 // SETING  WHAT APP WILL USE
 //==============================
 app.use(parser.urlencoded({ extended: true }));
+app.use(
+  require("express-session")({
+    secret: "mind wave",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 //==============================
 // ROUTES
@@ -43,6 +69,47 @@ app.get("/", function (req, res) {
   };
   res.json(sample);
 });
+
+//==============================
+// AUTH ROUTES
+//==============================
+
+app.post("/signup", (req, res) => {
+  User.register(new User({ username: req.body.username }), req.body.password)
+    .then((user) => {
+      passport.authenticate("local")(req, res, () => {
+        console.log("New user added");
+      });
+    })
+    .catch((err) => console.log(err));
+});
+
+app.post("/login", (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
+    if (err) {
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
+    if (!user) {
+      return res
+        .status(401)
+        .json({ message: "Authentication failed and fuck u" });
+    }
+
+    User.findOne({ username: user.username })
+      .then((foundUser) => {
+        console.log("This runned");
+        res.json(foundUser);
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json({ message: "Internal Server Error" });
+      });
+  })(req, res, next);
+});
+
+//===========================================
+//POST ROUTE
+//===========================================
 
 app.get("/post", (req, res) => {
   Post.find()
@@ -85,5 +152,5 @@ app.post("/comment", (req, res) => {
 // SERVER LISTENS
 //==============================
 app.listen(3000, function () {
-  console.log("yelp camp server has started");
+  console.log("mind wave server has started");
 });
