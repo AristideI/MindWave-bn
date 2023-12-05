@@ -152,7 +152,7 @@ app.post("/comment", (req, res) => {
 // SERVER LISTENS
 //==============================
 
-const port = process.env.PORT;
-app.listen(port, function () {
-  console.log("mind wave server has started");
+const PORT = process.env.PORT;
+app.listen(PORT, function () {
+  console.log("mind wave server has started", PORT);
 });
