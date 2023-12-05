@@ -13,20 +13,11 @@ const User = require("./models/User");
 const Post = require("./models/Post");
 const Comment = require("./models/Comment");
 
-// const connectDB = async () => {
-//   try {
-//     await mongoose.connect(process.env.MONGODB_CONNECT_URI);
-//     console.log("DB Connected successfully");
-//   } catch (err) {
-//     console.log("We had an error", err);
-//   }
-// };
-console.log("this is starting running");
 const connectDB = async () => {
   try {
-    const uri = process.env.MONGODB_CONNECT_URI || "your-fallback-uri";
-    console.log(uri);
-    await mongoose.connect(uri);
+    await mongoose.connect(
+      "mongodb+srv://aisingizwe:N6upWVMKU9rMcdNc@mind-wave.jkwtfzb.mongodb.net/mindwave?retryWrites=true&w=majority"
+    );
     console.log("DB Connected successfully");
   } catch (err) {
     console.log("We had an error", err);
