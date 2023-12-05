@@ -21,7 +21,7 @@ const Comment = require("./models/Comment");
 //     console.log("We had an error", err);
 //   }
 // };
-
+console.log("this is starting running");
 const connectDB = async () => {
   try {
     const uri = process.env.MONGODB_CONNECT_URI || "your-fallback-uri";
