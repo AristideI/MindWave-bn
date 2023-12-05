@@ -13,9 +13,20 @@ const User = require("./models/User");
 const Post = require("./models/Post");
 const Comment = require("./models/Comment");
 
+// const connectDB = async () => {
+//   try {
+//     await mongoose.connect(process.env.MONGODB_CONNECT_URI);
+//     console.log("DB Connected successfully");
+//   } catch (err) {
+//     console.log("We had an error", err);
+//   }
+// };
+
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_CONNECT_URI);
+    const uri = process.env.MONGODB_CONNECT_URI || "your-fallback-uri";
+    console.log(uri);
+    await mongoose.connect(uri);
     console.log("DB Connected successfully");
   } catch (err) {
     console.log("We had an error", err);
