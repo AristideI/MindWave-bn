@@ -13,26 +13,6 @@ const User = require("./models/User");
 const Post = require("./models/Post");
 const Comment = require("./models/Comment");
 
-// CONNECT  DATABASE
-// mongoose.connect("mongodb://127.0.0.1:27017/mindwave", {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true,
-// });
-
-// const connectDB = async () => {
-//   try {
-//     await mongoose.connect(process.env.MONGODB_CONNECT_URI, {
-//       useNewUrlParser: true,
-//       useUnifiedTopology: true,
-//       ssl: true, // Enable SSL
-//       sslValidate: true, // Validate SSL certificates
-//       //sslCA: yourCACertificate, // Provide your CA certificate
-//     });
-//     console.log("DB Connected successfully");
-//   } catch (err) {
-//     console.log("We had an error", err);
-//   }
-// };
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGODB_CONNECT_URI);
