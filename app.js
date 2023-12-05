@@ -72,6 +72,11 @@ app.post("/signup", (req, res) => {
     .then((user) => {
       passport.authenticate("local")(req, res, () => {
         console.log("New user added");
+        const sample = {
+          name: "aristide",
+          exp: "this is my first return of json data",
+        };
+        res.json(sample);
       });
     })
     .catch((err) => console.log(err));
