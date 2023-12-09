@@ -12,6 +12,7 @@ const passportLocalMongoose = require("passport-local-mongoose");
 const User = require("./models/User");
 const Post = require("./models/Post");
 const Comment = require("./models/Comment");
+const path = require("path");
 
 const connectDB = async () => {
   try {
@@ -108,7 +109,7 @@ app.post("/login", (req, res, next) => {
 //===========================================
 //POST ROUTE
 //===========================================
-
+app.use("/images", express.static("images"));
 app.get("/post", (req, res) => {
   Post.find()
     .populate("Comment")
@@ -120,9 +121,11 @@ app.get("/post", (req, res) => {
 });
 
 app.post("/post", (req, res) => {
-  const newPost = req.body.post;
+  const newPost = req.body;
+  console.log(newPost);
   User.findById(req.body.id)
     .then((user) => {
+      console.log(user);
       Post.create(newPost)
         .then((post) => {
           user.posts.push(post);

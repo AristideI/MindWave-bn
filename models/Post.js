@@ -3,6 +3,9 @@ const mongoose = require("mongoose");
 const postSchema = new mongoose.Schema({
   author: String,
   text: String,
+  time: String,
+  likes: Number,
+  image: String,
   comments: [
     {
       type: mongoose.Schema.Types.ObjectId,
