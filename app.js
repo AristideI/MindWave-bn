@@ -112,10 +112,11 @@ app.post("/login", (req, res, next) => {
 app.use("/images", express.static("images"));
 app.get("/post", (req, res) => {
   Post.find()
-    .populate("Comment")
+    .populate("comments")
     .exec()
     .then((data) => res.json(data))
     .catch((err) => {
+      console.log(err);
       res.status(500).json({ error: "Internal Server Error" });
     });
 });
@@ -123,18 +124,11 @@ app.get("/post", (req, res) => {
 app.post("/post", (req, res) => {
   const newPost = req.body;
   console.log(newPost);
-  User.findById(req.body.id)
-    .then((user) => {
-      console.log(user);
-      Post.create(newPost)
-        .then((post) => {
-          user.posts.push(post);
-        })
-        .then(() => {
-          res.status(200).json({ text: "new post was created" });
-        });
+  Post.create(newPost)
+    .then(() => {
+      res.status(200).json({ message: "New post created" });
     })
-    .catch((err) => res.status(500).json({ error: "Internal Server Error" }));
+    .catch((err) => console.log(err));
 });
 
 app.post("/comment", (req, res) => {
@@ -142,7 +136,11 @@ app.post("/comment", (req, res) => {
     .then((post) => {
       Comment.create(req.body.comment).then((comment) => {
         post.comments.push(comment);
+        post.save();
       });
+    })
+    .then(() => {
+      res.status(200).json({ message: "new comment created" });
     })
     .catch((err) => {
       console.log(err);
