@@ -53,6 +53,78 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 //==============================
+// Names generator
+//==============================
+
+const verbs = [
+  "Breathtaking",
+  "Radiant",
+  "Whimsical",
+  "Majestic",
+  "Serene",
+  "Joyful",
+  "Angry",
+  "Vibrant",
+  "Enchanting",
+  "Captivating",
+  "Mysterious",
+  "Luminous",
+  "Intriguing",
+  "Soothing",
+  "Elegant",
+  "Resplendent",
+  "Harmonious",
+  "Exquisite",
+  "Graceful",
+  "Spectacular",
+  "Happy",
+  "Sad",
+  "Effervescent",
+  "Tranquil",
+  "Mystical",
+  "Jubilant",
+  "Opulent",
+  "Ravishing",
+  "Dazzling",
+  "Alluring",
+  "Magical",
+  "Awe-inspiring",
+  "Delightful",
+];
+
+const animals = [
+  "Lion",
+  "Tiger",
+  "Elephant",
+  "Giraffe",
+  "Zebra",
+  "Kangaroo",
+  "Penguin",
+  "Cheetah",
+  "Koala",
+  "Panda",
+  "Gorilla",
+  "Hippopotamus",
+  "Leopard",
+  "Kangaroo",
+  "Polar Bear",
+  "Dolphin",
+  "Octopus",
+  "Eagle",
+  "Toucan",
+  "Koala",
+  "Penguin",
+  "Koala",
+  "Lynx",
+  "Armadillo",
+  "Chameleon",
+  "Pangolin",
+  "Meerkat",
+  "Otter",
+  "Raccoon",
+];
+
+//==============================
 // ROUTES
 //==============================
 
@@ -70,11 +142,14 @@ app.get("/", function (req, res) {
 
 app.post("/signup", (req, res) => {
   const imgId = Math.ceil(Math.random() * 20);
+  const firstname = Math.ceil(Math.random() * 29);
+  const lastname = Math.ceil(Math.random() * 29);
   User.register(
     new User({
       username: req.body.username,
       email: req.body.email,
       image: `https://mind-wave.onrender.com/images/p${imgId}.jpeg`,
+      displayName: verbs[firstname] + animals[lastname],
     }),
     req.body.password
   )
@@ -86,6 +161,7 @@ app.post("/signup", (req, res) => {
           email: user.email,
           image: user.image,
           id: user._id,
+          displayName: user.displayName,
         });
       });
     })
@@ -132,7 +208,6 @@ app.get("/post", (req, res) => {
 
 app.post("/post", (req, res) => {
   const newPost = req.body;
-  console.log(newPost);
   Post.create(newPost)
     .then(() => {
       res.status(200).json({ message: "New post created" });
