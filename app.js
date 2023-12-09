@@ -129,11 +129,7 @@ const animals = [
 //==============================
 
 app.get("/", function (req, res) {
-  const sample = {
-    name: "aristide",
-    exp: "this is my first return of json data",
-  };
-  res.json(sample);
+  res.status(200).json({ message: "Welcome to mind wave server" });
 });
 
 //==============================
