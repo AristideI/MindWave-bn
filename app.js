@@ -204,13 +204,13 @@ app.get("/post", (req, res) => {
 
 app.post("/post", (req, res) => {
   const images = {
-    depressed: "dep.jpeg",
-    suprissed: "sup.jpeg",
-    broken: "dep2.jpeg",
-    mad: "ang.jpg",
-    happy: "hap.jpg",
-    celebration: "cer.jpg",
-    normal: "nor4.jpg",
+    depressed: "https://mind-wave.onrender.com/images/dep.jpeg",
+    suprissed: "https://mind-wave.onrender.com/images/sup.jpeg",
+    broken: "https://mind-wave.onrender.com/images/dep2.jpeg",
+    mad: "https://mind-wave.onrender.com/images/ang.jpg",
+    happy: "https://mind-wave.onrender.com/images/hap.jpg",
+    celebration: "https://mind-wave.onrender.com/images/cer.jpg",
+    normal: "https://mind-wave.onrender.com/images/nor4.jpg",
   };
   const newPost = { ...req.body, image: images[req.body.mood] };
   Post.create(newPost)
