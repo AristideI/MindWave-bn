@@ -9,6 +9,7 @@ const postSchema = new mongoose.Schema({
   time: String,
   likes: Number,
   image: String,
+  mood: String,
   comments: [
     {
       type: mongoose.Schema.Types.ObjectId,

@@ -203,7 +203,16 @@ app.get("/post", (req, res) => {
 });
 
 app.post("/post", (req, res) => {
-  const newPost = req.body;
+  const images = {
+    depressed: "dep.jpeg",
+    suprissed: "sup.jpeg",
+    broken: "dep2.jpeg",
+    mad: "ang.jpg",
+    happy: "hap.jpg",
+    celebration: "cer.jpg",
+    normal: "nor4.jpg",
+  };
+  const newPost = { ...req.body, image: images[req.body.mood] };
   Post.create(newPost)
     .then(() => {
       res.status(200).json({ message: "New post created" });
@@ -212,9 +221,14 @@ app.post("/post", (req, res) => {
 });
 
 app.post("/comment", (req, res) => {
+  const newComment = {
+    author: req.body.author,
+    authorImg: req.body.authorImg,
+    text: req.body.text,
+  };
   Post.findById(req.body.id)
     .then((post) => {
-      Comment.create(req.body.comment).then((comment) => {
+      Comment.create(newComment).then((comment) => {
         post.comments.push(comment);
         post.save();
       });
