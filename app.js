@@ -69,15 +69,24 @@ app.get("/", function (req, res) {
 //==============================
 
 app.post("/signup", (req, res) => {
-  User.register(new User({ username: req.body.username }), req.body.password)
+  const imgId = Math.ceil(Math.random() * 20);
+  User.register(
+    new User({
+      username: req.body.username,
+      email: req.body.email,
+      image: `https://mind-wave.onrender.com/images/p${imgId}.jpeg`,
+    }),
+    req.body.password
+  )
     .then((user) => {
       passport.authenticate("local")(req, res, () => {
         console.log("New user added");
-        const sample = {
-          name: "aristide",
-          exp: "this is my first return of json data",
-        };
-        res.json(sample);
+        res.status(201).json({
+          username: user.username,
+          email: user.email,
+          image: user.image,
+          id: user._id,
+        });
       });
     })
     .catch((err) => console.log(err));
