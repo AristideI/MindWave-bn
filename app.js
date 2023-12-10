@@ -138,8 +138,6 @@ app.get("/", function (req, res) {
 // AUTH ROUTES
 //==============================
 
-const User = require("path-to-your-user-model"); // Import your User model
-
 app.post("/signup", async (req, res) => {
   const imgId = Math.ceil(Math.random() * 20);
   const firstname = Math.ceil(Math.random() * 29);
