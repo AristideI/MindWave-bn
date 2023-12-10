@@ -13,7 +13,9 @@ const User = require("./models/User");
 const Post = require("./models/Post");
 const Comment = require("./models/Comment");
 const path = require("path");
+const cors = require("cors");
 
+app.use(cors());
 const connectDB = async () => {
   try {
     await mongoose.connect(
@@ -151,8 +153,7 @@ app.post("/signup", (req, res) => {
   )
     .then((user) => {
       passport.authenticate("local")(req, res, () => {
-        console.log("New user added");
-        res.status(201).json({
+        res.json({
           username: user.username,
           email: user.email,
           image: user.image,
