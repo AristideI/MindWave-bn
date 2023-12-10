@@ -239,7 +239,7 @@ app.post("/post", (req, res) => {
     celebration: "https://mind-wave.onrender.com/images/cer.jpg",
     normal: "https://mind-wave.onrender.com/images/nor4.jpg",
   };
-  const newPost = { ...req.body, image: images[req.body.mood] };
+  const newPost = { ...req.body, image: images[req.body.mood], likes: 0 };
   Post.create(newPost)
     .then(() => {
       res.status(200).json({ message: "New post created" });
