@@ -138,31 +138,59 @@ app.get("/", function (req, res) {
 // AUTH ROUTES
 //==============================
 
-app.post("/signup", (req, res) => {
+const User = require("path-to-your-user-model"); // Import your User model
+
+app.post("/signup", async (req, res) => {
   const imgId = Math.ceil(Math.random() * 20);
   const firstname = Math.ceil(Math.random() * 29);
   const lastname = Math.ceil(Math.random() * 29);
-  User.register(
-    new User({
+
+  try {
+    const existingUser = await User.findOne({ username: req.body.username });
+
+    if (existingUser) {
+      return res.status(400).json({
+        status: "error",
+        message: "Username is already taken. Choose a different username.",
+      });
+    }
+
+    const newUser = new User({
       username: req.body.username,
       email: req.body.email,
       image: `https://mind-wave.onrender.com/images/p${imgId}.jpeg`,
       displayName: verbs[firstname] + animals[lastname],
-    }),
-    req.body.password
-  )
-    .then((user) => {
+    });
+
+    User.register(newUser, req.body.password, (err, user) => {
+      if (err) {
+        return res.status(500).json({
+          status: "error",
+          message: "Error during user registration.",
+        });
+      }
+
       passport.authenticate("local")(req, res, () => {
-        res.json({
-          username: user.username,
-          email: user.email,
-          image: user.image,
-          id: user._id,
-          displayName: user.displayName,
+        return res.status(201).json({
+          status: "success",
+          message: "User registered successfully.",
+          user: {
+            username: user.username,
+            email: user.email,
+            image: user.image,
+            id: user._id,
+            displayName: user.displayName,
+          },
         });
       });
-    })
-    .catch((err) => console.log(err));
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      status: "error",
+      message: "Internal server error.",
+    });
+  }
 });
 
 app.post("/login", (req, res, next) => {
