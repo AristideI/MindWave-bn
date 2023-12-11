@@ -252,6 +252,7 @@ app.post("/comment", (req, res) => {
     author: req.body.author,
     authorImg: req.body.authorImg,
     text: req.body.text,
+    time: req.body.time
   };
   Post.findById(req.body.id)
     .then((post) => {
