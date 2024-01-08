@@ -7,13 +7,18 @@ const postSchema = new mongoose.Schema({
   authorImg: String,
   text: String,
   time: String,
-  likes: Number,
   image: String,
   mood: String,
   comments: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Comment",
+    },
+  ],
+  likes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Like",
     },
   ],
 });

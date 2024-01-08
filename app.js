@@ -11,6 +11,7 @@ const LocalStrategy = require("passport-local");
 const passportLocalMongoose = require("passport-local-mongoose");
 const User = require("./models/User");
 const Post = require("./models/Post");
+const Like = require("./models/Like");
 const Comment = require("./models/Comment");
 const path = require("path");
 const cors = require("cors");
@@ -221,6 +222,7 @@ app.use("/images", express.static("images"));
 app.get("/post", (req, res) => {
   Post.find()
     .populate("comments")
+    .populate("likes")
     .exec()
     .then((data) => res.json(data))
     .catch((err) => {
@@ -239,7 +241,7 @@ app.post("/post", (req, res) => {
     celebration: "https://mind-wave.onrender.com/images/cer.jpg",
     normal: "https://mind-wave.onrender.com/images/nor4.jpg",
   };
-  const newPost = { ...req.body, image: images[req.body.mood], likes: 0 };
+  const newPost = { ...req.body, image: images[req.body.mood] };
   Post.create(newPost)
     .then(() => {
       res.status(200).json({ message: "New post created" });
@@ -252,7 +254,7 @@ app.post("/comment", (req, res) => {
     author: req.body.author,
     authorImg: req.body.authorImg,
     text: req.body.text,
-    time: req.body.time
+    time: req.body.time,
   };
   Post.findById(req.body.id)
     .then((post) => {
@@ -266,6 +268,54 @@ app.post("/comment", (req, res) => {
     })
     .catch((err) => {
       console.log(err);
+    });
+});
+
+app.post("/like", (req, res) => {
+  console.log(req.body.authorID, req.body.id);
+  const newLike = {
+    authorId: req.body.authorId,
+  };
+  Post.findById(req.body.id)
+    .then((post) => {
+      console.log(post);
+      Like.create(newLike).then((like) => {
+        console.log(like);
+        post.likes.push(like);
+        post.save();
+      });
+    })
+    .then(() => {
+      res.status(200).json({ message: "new like created" });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+// Add a new route for deleting a like
+app.delete("/like/:postId/:likeId", (req, res) => {
+  const postId = req.params.postId;
+  const likeId = req.params.likeId;
+
+  Post.findById(postId)
+    .then((post) => {
+      const indexToRemove = post.likes.findIndex(
+        (like) => like._id.toString() === likeId
+      );
+
+      if (indexToRemove !== -1) {
+        // Remove the like from the post's likes array
+        post.likes.splice(indexToRemove, 1);
+        post.save();
+        res.status(200).json({ message: "Like deleted successfully" });
+      } else {
+        res.status(404).json({ message: "Like not found" });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ error: "Internal Server Error" });
     });
 });
 
